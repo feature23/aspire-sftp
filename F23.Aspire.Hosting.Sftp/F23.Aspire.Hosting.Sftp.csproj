@@ -7,6 +7,10 @@
     <TreatWarningsAsErrors>true</TreatWarningsAsErrors>
     <LangVersion>14</LangVersion>
   </PropertyGroup>
+  
+  <ItemGroup>
+    <InternalsVisibleTo Include="F23.Aspire.Hosting.Sftp.Tests" />
+  </ItemGroup>
 
   <ItemGroup>
     <PackageReference Include="Aspire.Hosting" Version="13.0.0" />

@@ -4,6 +4,15 @@
     <Platform Name="x64" />
     <Platform Name="x86" />
   </Configurations>
+  <Folder Name="/debug/">
+    <File Path="debug\debug.sh" />
+    <File Path="debug\Dockerfile" />
+  </Folder>
+  <Folder Name="/files/">
+    <File Path="files/create-sftp-user" />
+    <File Path="files\entrypoint" />
+    <File Path="files\sshd_config" />
+  </Folder>
   <Folder Name="/Solution Items/">
     <File Path="Dockerfile" />
     <File Path=".dockerignore" />
@@ -12,5 +21,6 @@
     <File Path="files/entrypoint" />
   </Folder>
   <Project Path="Demo.AppHost/Demo.AppHost.csproj" />
+  <Project Path="F23.Aspire.Hosting.Sftp.Tests/F23.Aspire.Hosting.Sftp.Tests.csproj" />
   <Project Path="F23.Aspire.Hosting.Sftp/F23.Aspire.Hosting.Sftp.csproj" />
 </Solution>

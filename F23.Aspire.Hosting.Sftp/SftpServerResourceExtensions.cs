@@ -22,7 +22,10 @@ public static class SftpServerResourceExtensions
                     targetPort: 22,
                     port: port,
                     protocol: ProtocolType.Tcp,
-                    name: "sftp")
+                    scheme: "sftp",
+                    name: "sftp",
+                    isExternal: true,
+                    isProxied: true)
                 .WithEnvironment(async context =>
                 {
                     context.EnvironmentVariables["SFTP_USERS"] = await resource.GetSftpUsersStringAsync(context.CancellationToken);
@@ -69,6 +72,12 @@ public static class SftpServerResourceExtensions
             return builder.WithVolume(volumeName ?? builder.Resource.GetVolumeName($"{username}-{path.Replace('/', '-')}"),
                 target: $"/home/{username}/{path.TrimStart('/')}",
                 isReadOnly);
+        }
+
+        public ParameterResource GetSftpUserPassword(string username)
+        {
+            var user = builder.Resource.Users.FirstOrDefault(u => u.Username == username);
+            return user == null ? throw new ArgumentException($"SFTP user '{username}' not found in resource '{builder.Resource.Name}'.", nameof(username)) : user.Password;
         }
     }
 }
