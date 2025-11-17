@@ -17,6 +17,8 @@ COPY files/sshd_config /etc/ssh/sshd_config
 COPY files/create-sftp-user /usr/local/bin/
 COPY files/entrypoint /
 
+RUN chmod +x /entrypoint /usr/local/bin/create-sftp-user
+
 EXPOSE 22
 
 ENTRYPOINT ["/entrypoint"]
