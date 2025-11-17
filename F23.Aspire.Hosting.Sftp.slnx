@@ -1,0 +1,16 @@
+<Solution>
+  <Configurations>
+    <Platform Name="Any CPU" />
+    <Platform Name="x64" />
+    <Platform Name="x86" />
+  </Configurations>
+  <Folder Name="/Solution Items/">
+    <File Path="Dockerfile" />
+    <File Path=".dockerignore" />
+    <File Path="files/sshd_config" />
+    <File Path="files/create-sftp-user" />
+    <File Path="files/entrypoint" />
+  </Folder>
+  <Project Path="Demo.AppHost/Demo.AppHost.csproj" />
+  <Project Path="F23.Aspire.Hosting.Sftp/F23.Aspire.Hosting.Sftp.csproj" />
+</Solution>

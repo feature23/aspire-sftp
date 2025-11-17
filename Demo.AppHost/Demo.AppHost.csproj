@@ -1,0 +1,15 @@
+<Project Sdk="Aspire.AppHost.Sdk/13.0.0">
+
+    <PropertyGroup>
+        <OutputType>Exe</OutputType>
+        <TargetFramework>net10.0</TargetFramework>
+        <ImplicitUsings>enable</ImplicitUsings>
+        <Nullable>enable</Nullable>
+        <UserSecretsId>a86de5a1-5e23-4668-b078-5b0a53b2bf18</UserSecretsId>
+    </PropertyGroup>
+
+    <ItemGroup>
+      <ProjectReference Include="..\F23.Aspire.Hosting.Sftp\F23.Aspire.Hosting.Sftp.csproj" IsAspireProjectResource="false" />
+    </ItemGroup>
+
+</Project>
