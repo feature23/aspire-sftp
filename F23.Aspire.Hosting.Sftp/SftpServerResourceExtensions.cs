@@ -6,20 +6,69 @@ namespace F23.Aspire.Hosting.Sftp;
 
 public static class SftpServerResourceExtensions
 {
-    public static IResourceBuilder<SftpServerResource> AddSftpServer(this IDistributedApplicationBuilder builder,
-        string name,
-        int? port)
+    extension(IDistributedApplicationBuilder builder)
     {
-        var resource = new SftpServerResource(name);
+        public IResourceBuilder<SftpServerResource> AddSftpServer(string name,
+            int? port = null,
+            string? volumeNamePrefix = null)
+        {
+            var resource = new SftpServerResource(name);
 
-        return builder.AddResource(resource)
-            .WithImage("feature23/aspire-sftp")
-            .WithImageTag("latest")
-            .WithImageRegistry("ghcr.io")
-            .WithEndpoint(
-                targetPort: 22,
-                port: port,
-                protocol: ProtocolType.Tcp,
-                name: "sftp");
+            var resourceBuilder = builder.AddResource(resource)
+                .WithImage("feature23/aspire-sftp")
+                .WithImageTag("latest")
+                .WithImageRegistry("ghcr.io")
+                .WithEndpoint(
+                    targetPort: 22,
+                    port: port,
+                    protocol: ProtocolType.Tcp,
+                    name: "sftp")
+                .WithEnvironment(async context =>
+                {
+                    context.EnvironmentVariables["SFTP_USERS"] = await resource.GetSftpUsersStringAsync(context.CancellationToken);
+                });
+
+            // Precompute this once and also make it available to users of the resource
+            resource.VolumeNamePrefix = volumeNamePrefix ?? VolumeNameGenerator.Generate(resourceBuilder, string.Empty);
+
+            return resourceBuilder;
+        }
+    }
+
+    extension(IResourceBuilder<SftpServerResource> builder)
+    {
+        public IResourceBuilder<SftpServerResource> WithSshHostKeysVolume(
+            string? volumeName = null)
+        {
+            return builder.WithVolume(volumeName ?? builder.Resource.GetVolumeName("ssh-host-keys"), "/etc/ssh_volume");
+        }
+
+        public IResourceBuilder<SftpServerResource> WithSftpUser(string username,
+            IResourceBuilder<ParameterResource>? password = null,
+            IReadOnlyList<string>? directories = null)
+        {
+            var passwordParameter = password?.Resource
+                                    ?? ParameterResourceBuilderExtensions.CreateDefaultPasswordParameter(
+                                        builder: builder.ApplicationBuilder,
+                                        name: $"{builder.Resource.Name}-{username}-password",
+                                        minLower: 1,
+                                        minUpper: 1,
+                                        minNumeric: 1,
+                                        special: false); // to avoid possible issues with special characters in passwords, like `:` is known to break
+
+            var user = new SftpUser(username, passwordParameter, directories);
+            builder.Resource.AddUser(user);
+            return builder;
+        }
+
+        public IResourceBuilder<SftpServerResource> WithSftpVolume(string username,
+            string path,
+            string? volumeName = null,
+            bool isReadOnly = false)
+        {
+            return builder.WithVolume(volumeName ?? builder.Resource.GetVolumeName($"{username}-{path.Replace('/', '-')}"),
+                target: $"/home/{username}/{path.TrimStart('/')}",
+                isReadOnly);
+        }
     }
 }

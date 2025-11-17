@@ -31,6 +31,7 @@ fi
 
 # Create users only on first run
 if [ ! -f "$userConfFinalPath" ]; then
+    log "Creating SFTP users ..."
     mkdir -p "$(dirname $userConfFinalPath)"
 
     if [ -f "$userConfPath" ]; then
@@ -64,12 +65,34 @@ if [ ! -f "$userConfFinalPath" ]; then
         exit 3
     fi
 
+    # F23 Modification: check to see if we have a mounted volume for keys, and use them if so
+    if [ -f /etc/ssh_volume/ssh_host_ed25519_key ]; then
+        log "Using mounted ssh_host_ed25519_key from /etc/ssh_volume"
+        cp /etc/ssh_volume/ssh_host_ed25519_key /etc/ssh/
+    fi
+    if [ -f /etc/ssh_volume/ssh_host_rsa_key ]; then
+        log "Using mounted ssh_host_rsa_key from /etc/ssh_volume"
+        cp /etc/ssh_volume/ssh_host_rsa_key /etc/ssh/
+    fi
+
     # Generate unique ssh keys for this container, if needed
     if [ ! -f /etc/ssh/ssh_host_ed25519_key ]; then
         ssh-keygen -t ed25519 -f /etc/ssh/ssh_host_ed25519_key -N ''
+
+        # F23 Modification: backup generated keys to volume, if it exists
+        if [ -d /etc/ssh_volume ]; then
+            log "Backing up generated ssh_host_ed25519_key to /etc/ssh_volume"
+            cp /etc/ssh/ssh_host_ed25519_key /etc/ssh_volume/
+        fi
     fi
     if [ ! -f /etc/ssh/ssh_host_rsa_key ]; then
         ssh-keygen -t rsa -b 4096 -f /etc/ssh/ssh_host_rsa_key -N ''
+
+        # F23 Modification: backup generated keys to volume, if it exists
+        if [ -d /etc/ssh_volume ]; then
+            log "Backing up generated ssh_host_rsa_key to /etc/ssh_volume"
+            cp /etc/ssh/ssh_host_rsa_key /etc/ssh_volume/
+        fi
     fi
 
     # Restrict access from other users
