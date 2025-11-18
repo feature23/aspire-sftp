@@ -16,10 +16,17 @@ jobs:
 
     steps:
     - uses: actions/checkout@v4
+      with:
+        fetch-depth: 0
     - name: Setup .NET
       uses: actions/setup-dotnet@v4
       with:
         dotnet-version: 10.0.x
+    - name: Install dotnet-setversion
+      run: dotnet tool install -g dotnet-setversion
+    - name: Set version
+      shell: pwsh
+      run: ./SetVersion.ps1
     - name: Restore dependencies
       run: dotnet restore
     - name: Build
