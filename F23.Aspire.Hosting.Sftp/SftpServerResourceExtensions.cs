@@ -1,8 +1,9 @@
 using System.Net.Sockets;
-using Aspire.Hosting;
 using Aspire.Hosting.ApplicationModel;
+using F23.Aspire.Hosting.Sftp;
 
-namespace F23.Aspire.Hosting.Sftp;
+// ReSharper disable once CheckNamespace
+namespace Aspire.Hosting;
 
 public static class SftpServerResourceExtensions
 {

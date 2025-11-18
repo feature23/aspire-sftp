@@ -1,0 +1,47 @@
+name: Publish NuGet Package
+
+on:
+  workflow_dispatch:
+  release:
+    types: [published]
+
+jobs:
+  pack:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Setup .NET
+        uses: actions/setup-dotnet@v4
+        with:
+          dotnet-version: 10.0.x
+
+      - name: Install dotnet-setversion
+        run: dotnet tool install -g dotnet-setversion
+
+      - name: Set version
+        shell: pwsh
+        run: ./SetVersion.ps1
+
+      - name: Restore dependencies
+        run: dotnet restore
+
+      - name: Pack NuGet package
+        run: dotnet pack F23.Aspire.Hosting.Sftp/F23.Aspire.Hosting.Sftp.csproj -c Release
+
+      - name: Upload NuGet artifacts
+        uses: actions/upload-artifact@v4
+        with:
+          name: nuget-packages
+          path: F23.Aspire.Hosting.Sftp/bin/Release/*.nupkg
+          retention-days: 30
+
+      - name: Upload NuGet symbols
+        uses: actions/upload-artifact@v4
+        with:
+          name: nuget-symbols
+          path: F23.Aspire.Hosting.Sftp/bin/Release/*.snupkg
+          retention-days: 30

@@ -1,12 +1,10 @@
-using F23.Aspire.Hosting.Sftp;
-
 var builder = DistributedApplication.CreateBuilder(args);
 
-var sftp = builder.AddSftpServer("sftp-server", port: 2222)
+var sftp = builder.AddSftpServer("sftp-server")
     .WithDockerfile("..") // NOTE: This line is only for testing the Dockerfile locally, remove it for real-world usage.
     .WithSshHostKeysVolume() // persist SSH host keys across restarts
-    .WithSftpUser("foo", directories: ["data"]) // auto-generated password stored in user secrets
-    .WithSftpVolume("foo", "data"); // persist user data across restarts
+    .WithSftpUser(username: "foo", directories: ["data"]) // auto-generated password stored in user secrets
+    .WithSftpVolume(username: "foo", path: "data"); // persist user data across restarts
 
 // debug env vars and test sftp
 builder.AddDockerfile("env-var-debug", contextPath: "../debug")
