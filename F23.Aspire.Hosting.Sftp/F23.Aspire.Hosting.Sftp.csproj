@@ -6,6 +6,15 @@
     <Nullable>enable</Nullable>
     <TreatWarningsAsErrors>true</TreatWarningsAsErrors>
     <LangVersion>14</LangVersion>
+    <PackageId>F23.Aspire.Hosting.Sftp</PackageId>
+    <PackageLicenseExpression>MIT</PackageLicenseExpression>
+    <RepositoryUrl>https://github.com/feature23/aspire-sftp</RepositoryUrl>
+    <PackageTags>aspire sftp server hosting ssh atmoz docker</PackageTags>
+    <Description>SFTP server hosting support for Aspire.</Description>
+    <IsPackable>true</IsPackable>
+    <Version>0.0.0</Version>
+    <Company>feature[23]</Company>
+    <Authors>Paul Irwin</Authors>
   </PropertyGroup>
   
   <ItemGroup>
